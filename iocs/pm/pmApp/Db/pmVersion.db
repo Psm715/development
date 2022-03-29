@@ -1,0 +1,6 @@
+record(lsi, "$(user):pm:version") {
+    field(DTYP, "pm version")
+    field(DESC, "Version string")
+    field(SIZV, "$(SIZV=200)")
+    field(PINI, "YES")
+}

@@ -1,0 +1,99 @@
+TOP=../..
+
+include $(TOP)/configure/CONFIG
+#----------------------------------------
+#  ADD MACRO DEFINITIONS BELOW HERE
+
+# Use typed rset structure (see 3.16.1 release notes)
+USR_CPPFLAGS += -DUSE_TYPED_RSET
+
+# xxxRecord.h will be created from xxxRecord.dbd
+DBDINC += xxxRecord
+
+# Install xxxSupport.dbd into <top>/dbd
+DBD += xxxSupport.dbd
+
+# Build an IOC support library
+LIBRARY_IOC += pmSupport
+
+# Compile and add code to the support library
+pmSupport_SRCS += xxxRecord.c
+pmSupport_SRCS += devXxxSoft.c
+
+# Link locally-provided code into the support library,
+# rather than directly into the IOC application, that
+# causes problems on Windows DLL builds
+pmSupport_SRCS += dbSubExample.c
+pmSupport_SRCS += devpmVersion.c
+pmSupport_SRCS += pmHello.c
+pmSupport_SRCS += initTrace.c
+
+pmSupport_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+# Auto-generate a header file containing a version string.
+# Version comes from the VCS if available, else date+time.
+GENVERSION = pmVersion.h
+# Macro name
+GENVERSIONMACRO = pmVERSION
+
+# Build the IOC application
+PROD_IOC = pm
+
+# pm.dbd will be created and installed
+DBD += pm.dbd
+
+# pm.dbd will include these files:
+pm_DBD += base.dbd
+pm_DBD += xxxSupport.dbd
+pm_DBD += dbSubExample.dbd
+pm_DBD += devpmVersion.dbd
+pm_DBD += pmHello.dbd
+pm_DBD += initTrace.dbd
+
+# pm_registerRecordDeviceDriver.cpp derives from pm.dbd
+pm_SRCS += pm_registerRecordDeviceDriver.cpp
+
+# Build the main IOC entry point where needed
+pm_SRCS_DEFAULT += pmMain.cpp
+pm_SRCS_vxWorks += -nil-
+
+# Link in the code from our support library
+pm_LIBS += pmSupport
+
+# To build SNL programs, SNCSEQ must be defined
+# in the <top>/configure/RELEASE file
+ifneq ($(SNCSEQ),)
+    # Build sncExample into pmSupport
+    sncExample_SNCFLAGS += +r
+    pm_DBD += sncExample.dbd
+    # A .stt sequence program is *not* pre-processed:
+    pmSupport_SRCS += sncExample.stt
+    pmSupport_LIBS += seq pv
+    pm_LIBS += seq pv
+
+    # Build sncProgram as a standalone program
+    PROD_HOST += sncProgram
+    sncProgram_SNCFLAGS += +m
+    # A .st sequence program *is* pre-processed:
+    sncProgram_SRCS += sncProgram.st
+    sncProgram_LIBS += seq pv
+    sncProgram_LIBS += $(EPICS_BASE_HOST_LIBS)
+endif
+
+# Link QSRV (pvAccess Server) if available
+ifdef EPICS_QSRV_MAJOR_VERSION
+    pm_LIBS += qsrv
+    pm_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+    pm_DBD += PVAServerRegister.dbd
+    pm_DBD += qsrv.dbd
+endif
+
+# Finally link IOC to the EPICS Base libraries
+pm_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+include $(TOP)/configure/RULES
+#----------------------------------------
+#  ADD EXTRA GNUMAKE RULES BELOW HERE
+
+# Explicit dependency needed for generated header file
+devpmVersion$(DEP): $(COMMON_DIR)/$(GENVERSION)
