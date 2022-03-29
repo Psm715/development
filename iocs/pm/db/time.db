@@ -1,0 +1,19 @@
+#time pvs
+record(stringin, "${user}:T") {
+  field(DTYP, "Soft Timestamp")
+  field(SCAN, "1 second")
+ # field(TSEL, "${user}:T_calc.TIME CP")
+  field(INP, "@%b %d %Y %H:%M:%S")
+}
+record(stringin, "${user}:S") {
+  field(DTYP, "Soft Timestamp")
+  field(SCAN, "1 second")
+ # field(TSEL, "${user}:T_calc.TIME CP")
+  field(INP, "@%S")
+}
+record(calc, "${user}:HB") {
+  field(DESC, "calc pv for time of day")
+  field(SCAN, "1 second")
+  field(INPA, "${user}:S")
+  field(CALC, "A%2=0?1:0")
+}

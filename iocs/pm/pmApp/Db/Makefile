@@ -5,6 +5,7 @@ include $(TOP)/configure/CONFIG
 
 # Install databases, templates & substitutions like this
 DB += circle.db
+DB += time.db
 DB += dbExample1.db
 DB += dbExample2.db
 DB += pmVersion.db

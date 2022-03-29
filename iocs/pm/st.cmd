@@ -13,6 +13,7 @@ pm_registerRecordDeviceDriver pdbbase
 dbLoadTemplate "db/user.substitutions"
 dbLoadRecords "db/pmVersion.db", "user=PSM"
 dbLoadRecords "db/dbSubExample.db", "user=PSM"
+dbLoadRecords "db/time.db", "user=PSM"
 
 #- Set this to see messages from mySub
 #var mySubDebug 1
