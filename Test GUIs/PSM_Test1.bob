@@ -59,4 +59,28 @@
     <y>60</y>
     <width>60</width>
   </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_1</name>
+    <pv_name>PSM:T</pv_name>
+    <x>60</x>
+    <y>490</y>
+    <width>250</width>
+    <height>30</height>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_3</name>
+    <text>time</text>
+    <x>10</x>
+    <y>490</y>
+    <width>40</width>
+    <height>30</height>
+  </widget>
+  <widget type="led" version="2.0.0">
+    <name>LED</name>
+    <pv_name>PSM:HB</pv_name>
+    <x>360</x>
+    <y>490</y>
+    <width>25</width>
+    <height>25</height>
+  </widget>
 </display>
