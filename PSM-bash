@@ -1,0 +1,7 @@
+#Marino's bash commands 
+alias ba='nano ~/.bashrc'
+alias so='source ~/.bashrc'
+alias ph='./phoebus/phoebus.sh'
+alias e='cd /home/pi/epics/iocs'
+alias x='exit'
+
